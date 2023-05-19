@@ -105,6 +105,72 @@ namespace HSPA_TEST.Presentation.Controllers
             return CreatedAtAction(nameof(GetById), new {Id = citydomainmodel.Id}, CityDtoRemapped);
         }
 
+        //  Update an existing city in the Cities table.
+        //PUT : https://localhost:port/api/city/{id}
+         [HttpPut]
+         [Route("{Id:Guid}")]
+         public IActionResult UpdateCity(Guid id, [FromBody] CityDto cityDto)
+        {
+            var city = dbContext.Cities.FirstOrDefault(c => c.Id == id);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            city.Name = cityDto.Name;
+            city.Country = cityDto.Country;
+
+            dbContext.SaveChanges();
+
+            var updatedCityDto = new CityDto
+            {
+                Id = city.Id,
+                Name = city.Name,
+                Country = city.Country
+            };
+
+            return Ok(updatedCityDto);
+        }
+        
+       /* // POST - Add/Create new City
+        public IActionResult CreateCity([FromBody] CityDto cityDto)
+        {
+            var city = new City
+            {
+                Id = Guid.NewGuid(),
+                Name = cityDto.Name,
+                Country = cityDto.Country
+            };
+
+             dbContext.Cities.Add(city);
+             dbContext.SaveChanges();
+
+            var createdCityDto = new CityDto
+            {
+                Id = city.Id,
+                Name = city.Name,
+                Country = city.Country
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = city.Id }, createdCityDto);
+        }*/
+
+        //Delete - Delete a city from the Cities table.
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCity(Guid id)
+        {
+            var city = dbContext.Cities.FirstOrDefault(c => c.Id == id);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            dbContext.Cities.Remove(city);
+            dbContext.SaveChanges();
+
+            return NoContent();
+        }
+
     }
 }
 
