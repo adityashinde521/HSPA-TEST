@@ -131,29 +131,6 @@ namespace HSPA_TEST.Presentation.Controllers
 
             return Ok(updatedCityDto);
         }
-        
-       /* // POST - Add/Create new City
-        public IActionResult CreateCity([FromBody] CityDto cityDto)
-        {
-            var city = new City
-            {
-                Id = Guid.NewGuid(),
-                Name = cityDto.Name,
-                Country = cityDto.Country
-            };
-
-             dbContext.Cities.Add(city);
-             dbContext.SaveChanges();
-
-            var createdCityDto = new CityDto
-            {
-                Id = city.Id,
-                Name = city.Name,
-                Country = city.Country
-            };
-
-            return CreatedAtAction(nameof(GetById), new { id = city.Id }, createdCityDto);
-        }*/
 
         //Delete - Delete a city from the Cities table.
         [HttpDelete("{id}")]
