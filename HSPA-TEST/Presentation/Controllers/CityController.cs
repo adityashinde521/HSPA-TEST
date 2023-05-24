@@ -27,10 +27,10 @@ namespace HSPA_TEST.Presentation.Controllers
         //GET ALL Cities
         //https://localhost:portno/api/City
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             //Get Data from Database - Domain Model file
-            var citiesDomain = dbContext.Cities.ToList();
+            var citiesDomain = await dbContext.Cities.ToListAsync();
 
             //Map Domain Models to Dtos
             var citiesDtos = new List<CityDto>();
@@ -53,13 +53,13 @@ namespace HSPA_TEST.Presentation.Controllers
         //https://localhost:port/api/City/id
         [HttpGet]
         [Route("{Id:Guid}")]    
-        public IActionResult GetById([FromRoute] Guid Id)
+        public async Task<IActionResult> GetById([FromRoute] Guid Id)
         {
             //Get city domain moel from DB
             //var city = dbContext.Cities.Find(Id);
 
             //M-2 : 
-            var cityDomain = dbContext.Cities.FirstOrDefault( x => x.Id == Id);
+            var cityDomain = await dbContext.Cities.FirstOrDefaultAsync( x => x.Id == Id);
 
             if (cityDomain == null)
             {
@@ -78,7 +78,7 @@ namespace HSPA_TEST.Presentation.Controllers
         //https://localhost:port/api/City/
 
         [HttpPost]
-        public IActionResult Create([FromBody] CityDto cityDto)
+        public async Task<IActionResult> Create([FromBody] CityDto cityDto)
         {
             // Map DTO to domain model
             var citydomainmodel = new City
@@ -89,8 +89,8 @@ namespace HSPA_TEST.Presentation.Controllers
             };
 
             // Save the city to the database or perform any necessary operations
-            dbContext.Cities.Add(citydomainmodel);
-            dbContext.SaveChanges();
+            await dbContext.Cities.AddAsync(citydomainmodel);
+            await dbContext.SaveChangesAsync();
 
             //Remapping domain model to Dtos
 
@@ -109,9 +109,9 @@ namespace HSPA_TEST.Presentation.Controllers
         //PUT : https://localhost:port/api/city/{id}
          [HttpPut]
          [Route("{Id:Guid}")]
-         public IActionResult UpdateCity(Guid id, [FromBody] CityDto cityDto)
+         public async Task<IActionResult> UpdateCity(Guid id, [FromBody] CityDto cityDto)
         {
-            var city = dbContext.Cities.FirstOrDefault(c => c.Id == id);
+            var city = await dbContext.Cities.FirstOrDefaultAsync(c => c.Id == id);
             if (city == null)
             {
                 return NotFound();
@@ -120,7 +120,7 @@ namespace HSPA_TEST.Presentation.Controllers
             city.Name = cityDto.Name;
             city.Country = cityDto.Country;
 
-            dbContext.SaveChanges();
+            dbContext.SaveChangesAsync();
 
             var updatedCityDto = new CityDto
             {
@@ -157,18 +157,28 @@ namespace HSPA_TEST.Presentation.Controllers
 
         //Delete - Delete a city from the Cities table.
         [HttpDelete("{id}")]
-        public IActionResult DeleteCity(Guid id)
+        public async Task<IActionResult> DeleteCity(Guid id)
         {
-            var city = dbContext.Cities.FirstOrDefault(c => c.Id == id);
+            var city = await dbContext.Cities.FirstOrDefaultAsync(c => c.Id == id);
             if (city == null)
             {
                 return NotFound();
             }
 
+            //Delete region
             dbContext.Cities.Remove(city);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
-            return NoContent();
+            //return deleted City back
+            //map Domain Model to Dto
+
+            var cityDto = new CityDto
+            {
+                Id = city.Id,
+                Name = city.Name,
+                Country = city.Country
+            };
+            return Ok(cityDto);
         }
 
     }
