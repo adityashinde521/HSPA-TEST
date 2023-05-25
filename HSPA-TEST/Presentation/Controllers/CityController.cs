@@ -1,6 +1,7 @@
 ﻿using HSPA_TEST.BLL.DTOs;
 using HSPA_TEST.DAL.Data;
 using HSPA_TEST.DAL.Models;
+using HSPA_TEST.DAL.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +17,15 @@ namespace HSPA_TEST.Presentation.Controllers
     {
 
         private readonly DataContext dbContext; //This line declares a private field named dbContext of type DataContext.It is used to access the data in the database.
-        public CityController(DataContext dbContext) //This is the constructor for the CityController class.
+        private readonly ICityRepository cityRepository;
+
+        public CityController(DataContext dbContext, ICityRepository cityRepository) //This is the constructor for the CityController class.
                                                      //It takes a parameter of type DataContext and assigns it to the dbContext field.
                                                      //This is known as dependency injection, where the DataContext is provided to the controller when it is created.
 
         {
             this.dbContext = dbContext;
+            this.cityRepository = cityRepository;
         }
 
         //GET ALL Cities
@@ -30,11 +34,14 @@ namespace HSPA_TEST.Presentation.Controllers
         public async Task<IActionResult> GetAll()
         {
             //Get Data from Database - Domain Model file
-            var citiesDomain = await dbContext.Cities.ToListAsync();
-
+            
+            //var citiesDomain = await dbContext.Cities.ToListAsync();  // No need of this already called in Repository pttern
+            var citiesDomain = await cityRepository.GetAllAsync();
+                
             //Map Domain Models to Dtos
             var citiesDtos = new List<CityDto>();  //comes from DTO folder
-            foreach (var cityDomain in citiesDomain)
+
+            foreach (var cityDomain in citiesDomain) 
             {
                 citiesDtos.Add(new CityDto()
                 {
@@ -58,8 +65,8 @@ namespace HSPA_TEST.Presentation.Controllers
             //Get city domain moel from DB
             //var city = dbContext.Cities.Find(Id);
             //M-2 : 
-            var cityDomain = await dbContext.Cities.FirstOrDefaultAsync(x => x.Id == Id);
-
+            //var cityDomain = await dbContext.Cities.FirstOrDefaultAsync(x => x.Id == Id);
+            var cityDomain = await cityRepository.GetById(Id);
             if (cityDomain == null)
             {
                 return NotFound();

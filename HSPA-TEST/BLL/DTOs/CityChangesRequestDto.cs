@@ -2,7 +2,7 @@
 
 namespace HSPA_TEST.BLL.DTOs
 {
-    public class AddCityRequestDto
+    public class CityChangesRequestDto
     {
         [Required(ErrorMessage = "Name is mandatory field")]
         [StringLength(50, MinimumLength = 2)]
