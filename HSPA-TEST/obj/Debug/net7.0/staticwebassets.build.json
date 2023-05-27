@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "oTqmnEMf2LaVCbsMIm/jaPBOB4ZNHwIshvGE6Z/Q1R0=",
+  "Source": "HSPA-TEST",
+  "BasePath": "_content/HSPA-TEST",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
