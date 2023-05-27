@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿namespace HSPA_TEST.BLL.DTOs
+=======
+﻿/*namespace HSPA_TEST.BLL.DTOs
+>>>>>>> a9bc5bd5a40d2ed2b39611e4e3d3987439611093
 {
     public class PropertyListDto
     {
@@ -17,3 +21,7 @@
         public string Photo { get; set; }
     }
 }
+<<<<<<< HEAD
+=======
+*/
+>>>>>>> a9bc5bd5a40d2ed2b39611e4e3d3987439611093

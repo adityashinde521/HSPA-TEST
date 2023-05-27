@@ -1,6 +1,7 @@
 ﻿using HSPA_TEST.BLL.DTOs;
 using HSPA_TEST.DAL.Data;
 using HSPA_TEST.DAL.Models;
+using HSPA_TEST.DAL.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +17,15 @@ namespace HSPA_TEST.Presentation.Controllers
     {
 
         private readonly DataContext dbContext; //This line declares a private field named dbContext of type DataContext.It is used to access the data in the database.
-        public CityController(DataContext dbContext) //This is the constructor for the CityController class.
+        private readonly ICityRepository cityRepository;
+
+        public CityController(DataContext dbContext, ICityRepository cityRepository) //This is the constructor for the CityController class.
                                                      //It takes a parameter of type DataContext and assigns it to the dbContext field.
                                                      //This is known as dependency injection, where the DataContext is provided to the controller when it is created.
 
         {
             this.dbContext = dbContext;
+            this.cityRepository = cityRepository;
         }
 
         //GET ALL Cities
@@ -30,10 +34,11 @@ namespace HSPA_TEST.Presentation.Controllers
         public async Task<IActionResult> GetAll()
         {
             //Get Data from Database - Domain Model file
-            var citiesDomain = await dbContext.Cities.ToListAsync();
+            var citiesDomain = dbContext.Cities.ToList();
 
             //Map Domain Models to Dtos
-            var citiesDtos = new List<CityDto>();
+            var citiesDtos = new List<CityDto>();  //comes from DTO folder
+
             foreach (var cityDomain in citiesDomain) 
             {
                 citiesDtos.Add(new CityDto()
@@ -42,147 +47,127 @@ namespace HSPA_TEST.Presentation.Controllers
                     Name = cityDomain.Name,
                     Country = cityDomain.Country,
                 });
-                    
-            }
 
+            }
             //Return Dtos
             return Ok(citiesDtos); //citiesDomain
         }
+
 
         //GET Single CITY (by ID)
         //https://localhost:port/api/City/id
         [HttpGet]
         [Route("{Id:Guid}")]    
-        public async Task<IActionResult> GetById([FromRoute] Guid Id)
+        public IActionResult GetById([FromRoute] Guid Id)
         {
             //Get city domain moel from DB
             //var city = dbContext.Cities.Find(Id);
-
             //M-2 : 
-            var cityDomain = await dbContext.Cities.FirstOrDefaultAsync( x => x.Id == Id);
+            var cityDomain = dbContext.Cities.FirstOrDefault( x => x.Id == Id);
 
             if (cityDomain == null)
             {
                 return NotFound();
             }
 
-            //Mapping DTOs
-            var CityDto = new CityDto
+            //Mapping/Convert City Domain Model to City DTOs
+            var cityDto = new CityDto
             {
                 Id = cityDomain.Id,
+                Name = cityDomain.Name,
+                Country = cityDomain.Country,
             };
-            return Ok(CityDto);
+
+            //Return Dtos
+            return Ok(cityDto);
         }
+
 
         //Post to create new City
         //https://localhost:port/api/City/
-
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CityDto cityDto)
+        public IActionResult Create([FromBody] CityDto cityDto)
         {
-            // Map DTO to domain model
-            var citydomainmodel = new City
+            // Reverse >> Map DTO to domain model
+            var cityDomainModel = new City
             {
-                Id = Guid.NewGuid(),
-                Name = cityDto.Name,
-                Country = cityDto.Country
+                Name = addCityRequestDto.Name,
+                Country = addCityRequestDto.Country
             };
 
             // Save the city to the database or perform any necessary operations
-            await dbContext.Cities.AddAsync(citydomainmodel);
-            await dbContext.SaveChangesAsync();
+            dbContext.Cities.Add(citydomainmodel);
+            dbContext.SaveChanges();
 
             //Remapping domain model to Dtos
 
             var CityDtoRemapped = new CityDto
             {
-                Id =  citydomainmodel.Id,
-                Name = citydomainmodel.Name,
-                Country = citydomainmodel.Country
+                Id = cityDomainModel.Id,
+                Name = cityDomainModel.Name,
+                Country = cityDomainModel.Country
             };
 
             // Return a successful response with the created city
-            return CreatedAtAction(nameof(GetById), new {Id = citydomainmodel.Id}, CityDtoRemapped);
+            return CreatedAtAction(nameof(GetById), new { Id = cityDomainModel.Id }, CityDtoRemapped);
         }
 
+        
         //  Update an existing city in the Cities table.
         //PUT : https://localhost:port/api/city/{id}
          [HttpPut]
          [Route("{Id:Guid}")]
-         public async Task<IActionResult> UpdateCity(Guid id, [FromBody] CityDto cityDto)
+         public IActionResult UpdateCity(Guid id, [FromBody] CityDto cityDto)
         {
-            var city = await dbContext.Cities.FirstOrDefaultAsync(c => c.Id == id);
+            var city = dbContext.Cities.FirstOrDefault(c => c.Id == id);
             if (city == null)
             {
                 return NotFound();
             }
 
-            city.Name = cityDto.Name;
-            city.Country = cityDto.Country;
+            //Map Dto to Domain Model
+            cityDomainModel.Name = cityChangesRequestDto.Name;
+            cityDomainModel.Country = cityChangesRequestDto.Country;
 
-            dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
 
-            var updatedCityDto = new CityDto
+            dbContext.SaveChanges();
+
+            //Convert Domain Model to DTo
+            var cityDtoRemapped = new CityDto
             {
-                Id = city.Id,
-                Name = city.Name,
-                Country = city.Country
+                Id = cityDomainModel.Id,
+                Name = cityDomainModel.Name,
+                Country = cityDomainModel.Country
             };
 
-            return Ok(updatedCityDto);
+            return Ok(cityDtoRemapped);
         }
-        
-       /* // POST - Add/Create new City
-        public IActionResult CreateCity([FromBody] CityDto cityDto)
-        {
-            var city = new City
-            {
-                Id = Guid.NewGuid(),
-                Name = cityDto.Name,
-                Country = cityDto.Country
-            };
 
-             dbContext.Cities.Add(city);
-             dbContext.SaveChanges();
-
-            var createdCityDto = new CityDto
-            {
-                Id = city.Id,
-                Name = city.Name,
-                Country = city.Country
-            };
-
-            return CreatedAtAction(nameof(GetById), new { id = city.Id }, createdCityDto);
-        }*/
 
         //Delete - Delete a city from the Cities table.
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCity(Guid id)
+        public IActionResult DeleteCity(Guid id)
         {
-            var city = await dbContext.Cities.FirstOrDefaultAsync(c => c.Id == id);
+            var city = dbContext.Cities.FirstOrDefault(c => c.Id == id);
             if (city == null)
             {
                 return NotFound();
             }
 
-            //Delete region
             dbContext.Cities.Remove(city);
-            await dbContext.SaveChangesAsync();
+            dbContext.SaveChanges();
 
-            //return deleted City back
-            //map Domain Model to Dto
-
-            var cityDto = new CityDto
-            {
-                Id = city.Id,
-                Name = city.Name,
-                Country = city.Country
-            };
-            return Ok(cityDto);
+            return NoContent();
         }
 
     }
 }
+
+
+
+
+
 
 
 
