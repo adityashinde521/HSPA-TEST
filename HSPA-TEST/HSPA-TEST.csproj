@@ -24,6 +24,7 @@
   <ItemGroup>
     <Folder Include="BLL\Interfaces\" />
     <Folder Include="BLL\Services\" />
+    <Folder Include="DAL\Data\" />
   </ItemGroup>
 
 </Project>

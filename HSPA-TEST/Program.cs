@@ -1,4 +1,5 @@
-using HSPA_TEST.DAL.Data;
+using HSPA_TEST.DAL;
+using HSPA_TEST.DAL.Repositories;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,8 +11,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<DataContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("HSPAConnectionString")));
+
+builder.Services.AddScoped<ICityRepository, CityRepository>();  //This Injects ICity Repo with Implementation of CityRepository
 
 var app = builder.Build();
 
