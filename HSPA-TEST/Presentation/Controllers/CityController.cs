@@ -1,13 +1,9 @@
 ﻿using HSPA_TEST.BLL.DTOs;
-using HSPA_TEST.DAL.Data;
+using HSPA_TEST.DAL;
 using HSPA_TEST.DAL.Models;
 using HSPA_TEST.DAL.Repositories;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HSPA_TEST.Presentation.Controllers
 {
@@ -20,8 +16,8 @@ namespace HSPA_TEST.Presentation.Controllers
         private readonly ICityRepository cityRepository;
 
         public CityController(DataContext dbContext, ICityRepository cityRepository) //This is the constructor for the CityController class.
-                                                     //It takes a parameter of type DataContext and assigns it to the dbContext field.
-                                                     //This is known as dependency injection, where the DataContext is provided to the controller when it is created.
+                                                                                     //It takes a parameter of type DataContext and assigns it to the dbContext field.
+                                                                                     //This is known as dependency injection, where the DataContext is provided to the controller when it is created.
 
         {
             this.dbContext = dbContext;
@@ -34,14 +30,12 @@ namespace HSPA_TEST.Presentation.Controllers
         public async Task<IActionResult> GetAll()
         {
             //Get Data from Database - Domain Model file
-            
             //var citiesDomain = await dbContext.Cities.ToListAsync();  // No need of this already called in Repository pttern
             var citiesDomain = await cityRepository.GetAllAsync();
-                
+
             //Map Domain Models to Dtos
             var citiesDtos = new List<CityDto>();  //comes from DTO folder
-
-            foreach (var cityDomain in citiesDomain) 
+            foreach (var cityDomain in citiesDomain)
             {
                 citiesDtos.Add(new CityDto()
                 {
@@ -66,7 +60,7 @@ namespace HSPA_TEST.Presentation.Controllers
             //var city = dbContext.Cities.Find(Id);
             //M-2 : 
             //var cityDomain = await dbContext.Cities.FirstOrDefaultAsync(x => x.Id == Id);
-            var cityDomain = await cityRepository.GetById(Id);
+            var cityDomain = await cityRepository.GetByIdAsync(Id);
             if (cityDomain == null)
             {
                 return NotFound();
@@ -98,8 +92,7 @@ namespace HSPA_TEST.Presentation.Controllers
             };
 
             // Save the city to the database or perform any necessary operations
-            await dbContext.Cities.AddAsync(cityDomainModel);
-            await dbContext.SaveChangesAsync();
+            cityDomainModel = await cityRepository.CreateAsync(cityDomainModel);
 
             //Remapping domain model to Dtos
 
@@ -114,35 +107,37 @@ namespace HSPA_TEST.Presentation.Controllers
             return CreatedAtAction(nameof(GetById), new { Id = cityDomainModel.Id }, CityDtoRemapped);
         }
 
-        
+
         //  Update an existing city in the Cities table.
         //PUT : https://localhost:port/api/city/{id}
         [HttpPut]
         [Route("{Id:Guid}")]
-        public async Task<IActionResult> UpdateCity(Guid Id, [FromBody] CityChangesRequestDto cityChangesRequestDto)
+        public async Task<IActionResult> Update(Guid Id, [FromBody] CityChangesRequestDto updateCityRequestDto)
         {
-            var cityDomainModel = await dbContext.Cities.FirstOrDefaultAsync(c => c.Id == Id);
+
+            var cityDomainModel = new City
+            {
+                Name = updateCityRequestDto.Name,
+                Country = updateCityRequestDto.Country
+            };
+
+            cityDomainModel = await cityRepository.UpdateAsync(Id, cityDomainModel);
+
             if (cityDomainModel == null)
             {
                 return NotFound();
             }
 
-            //Map Dto to Domain Model
-            cityDomainModel.Name = cityChangesRequestDto.Name;
-            cityDomainModel.Country = cityChangesRequestDto.Country;
-
-            await dbContext.SaveChangesAsync();
-
 
             //Convert Domain Model to DTo
-            var cityDtoRemapped = new CityDto
+            var cityDto = new CityDto
             {
                 Id = cityDomainModel.Id,
                 Name = cityDomainModel.Name,
                 Country = cityDomainModel.Country
             };
 
-            return Ok(cityDtoRemapped);
+            return Ok(cityDto);
         }
 
 
@@ -150,32 +145,30 @@ namespace HSPA_TEST.Presentation.Controllers
         //abc
         [HttpDelete]
         [Route("{Id:Guid}")]
-        public async Task<IActionResult> DeleteCity(Guid Id)
+        public async Task<IActionResult> Delete([FromRoute] Guid Id)
         {
-            var cityDomainModel = await dbContext.Cities.FirstOrDefaultAsync(c => c.Id == Id);
+            var cityDomainModel = await cityRepository.DeleteAsync(Id);
+
             if (cityDomainModel == null)
             {
                 return NotFound();
             }
 
-            //Delete region
-            dbContext.Cities.Remove(cityDomainModel);
-            await dbContext.SaveChangesAsync();
+                //return deleted City back
+                //map Domain Model to Dto
 
-            //return deleted City back
-            //map Domain Model to Dto
+                var cityDto = new CityDto
+                {
+                    Id = cityDomainModel.Id,
+                    Name = cityDomainModel.Name,
+                    Country = cityDomainModel.Country
+                };
+                return Ok(cityDto);
+            }
 
-            var cityDto = new CityDto
-            {
-                Id = cityDomainModel.Id,
-                Name = cityDomainModel.Name,
-                Country = cityDomainModel.Country
-            };
-            return Ok(cityDto);
         }
-
     }
-}
+
 
 
 
