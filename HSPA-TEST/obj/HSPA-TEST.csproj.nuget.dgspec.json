@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\CTSHANDSON\\PROJECT\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST.csproj": {}
+    "C:\\Users\\2263016\\OneDrive - Cognizant\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST.csproj": {}
   },
   "projects": {
-    "E:\\CTSHANDSON\\PROJECT\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST.csproj": {
+    "C:\\Users\\2263016\\OneDrive - Cognizant\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\CTSHANDSON\\PROJECT\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST.csproj",
+        "projectUniqueName": "C:\\Users\\2263016\\OneDrive - Cognizant\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST.csproj",
         "projectName": "HSPA-TEST",
-        "projectPath": "E:\\CTSHANDSON\\PROJECT\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST.csproj",
-        "packagesPath": "C:\\Users\\adity\\.nuget\\packages\\",
-        "outputPath": "E:\\CTSHANDSON\\PROJECT\\HSPA-TEST\\HSPA-TEST\\obj\\",
+        "projectPath": "C:\\Users\\2263016\\OneDrive - Cognizant\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST.csproj",
+        "packagesPath": "C:\\Users\\2263016\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\2263016\\OneDrive - Cognizant\\HSPA-TEST\\HSPA-TEST\\HSPA-TEST\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\adity\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\2263016\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -44,6 +40,14 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.5, )"
@@ -61,6 +65,14 @@
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
+            "Microsoft.Extensions.Identity.Core": {
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
+            "Microsoft.Extensions.Identity.Stores": {
               "target": "Package",
               "version": "[7.0.5, )"
             },
@@ -88,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }
