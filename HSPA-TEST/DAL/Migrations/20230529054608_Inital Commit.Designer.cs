@@ -4,6 +4,7 @@ using HSPA_TEST.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HSPA_TEST.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230529054608_Inital Commit")]
+    partial class InitalCommit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,6 +135,9 @@ namespace HSPA_TEST.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PostedBy")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PostedOn")
                         .HasColumnType("datetime2");
 
@@ -156,6 +162,8 @@ namespace HSPA_TEST.DAL.Migrations
 
                     b.HasIndex("FurnishingTypeId");
 
+                    b.HasIndex("PostedBy");
+
                     b.HasIndex("PropertyTypeId");
 
                     b.ToTable("Properties");
@@ -174,6 +182,31 @@ namespace HSPA_TEST.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PropertyTypes");
+                });
+
+            modelBuilder.Entity("HSPA_TEST.DAL.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+
+                    b.Property<byte[]>("Password")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordKey")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HSPA_TEST.DAL.Models.Photo", b =>
@@ -201,6 +234,12 @@ namespace HSPA_TEST.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HSPA_TEST.DAL.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("PostedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("HSPA_TEST.DAL.Models.PropertyType", "PropertyType")
                         .WithMany()
                         .HasForeignKey("PropertyTypeId")
@@ -212,6 +251,8 @@ namespace HSPA_TEST.DAL.Migrations
                     b.Navigation("FurnishingType");
 
                     b.Navigation("PropertyType");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HSPA_TEST.DAL.Models.Property", b =>

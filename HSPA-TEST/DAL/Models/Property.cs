@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
+using HSPA_TEST.DAL.Models.Authentication;
+
 namespace HSPA_TEST.DAL.Models
 {
     public class Property
@@ -32,9 +34,6 @@ namespace HSPA_TEST.DAL.Models
         public ICollection<Photo> Photos { get; set; }
         public DateTime PostedOn { get; set; } = DateTime.Now;
 
-        [ForeignKey("User")]
-        public int PostedBy { get; set; }
-        public User User { get; set; }
     }
 }
 
