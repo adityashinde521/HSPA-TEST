@@ -1,7 +1,8 @@
 ﻿using HSPA_TEST.BLL.DTOs;
-using HSPA_TEST.DAL;
+using HSPA_TEST.DAL.Data;
+using HSPA_TEST.DAL.Interface;
 using HSPA_TEST.DAL.Models;
-using HSPA_TEST.DAL.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace HSPA_TEST.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class CityController : ControllerBase
     {
 
@@ -27,6 +29,7 @@ namespace HSPA_TEST.Presentation.Controllers
         //GET ALL Cities
         //https://localhost:portno/api/City
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             //Get Data from Database - Domain Model file
@@ -54,6 +57,8 @@ namespace HSPA_TEST.Presentation.Controllers
         //https://localhost:port/api/City/id
         [HttpGet]
         [Route("{Id:Guid}")]
+        [AllowAnonymous]
+
         public async Task<IActionResult> GetById([FromRoute] Guid Id)
         {
             //Get city domain moel from DB
@@ -114,12 +119,15 @@ namespace HSPA_TEST.Presentation.Controllers
         [Route("{Id:Guid}")]
         public async Task<IActionResult> Update(Guid Id, [FromBody] CityChangesRequestDto updateCityRequestDto)
         {
-
+            
             var cityDomainModel = new City
             {
                 Name = updateCityRequestDto.Name,
                 Country = updateCityRequestDto.Country
             };
+
+            if (Id != cityDomainModel.Id)                           //Url Id Manipulation
+                return BadRequest("Update Not Allowed");
 
             cityDomainModel = await cityRepository.UpdateAsync(Id, cityDomainModel);
 

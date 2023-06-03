@@ -1,4 +1,6 @@
-﻿using HSPA_TEST.DAL.Models;
+﻿using HSPA_TEST.DAL.Data;
+using HSPA_TEST.DAL.Interface;
+using HSPA_TEST.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HSPA_TEST.DAL.Repositories
