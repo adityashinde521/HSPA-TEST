@@ -1,7 +1,20 @@
 {
   "ExpandedNodes": [
+<<<<<<< HEAD
+    "",
+    "\\HSPA-TEST",
+    "\\HSPA-TEST\\bin",
+    "\\HSPA-TEST\\bin\\Debug",
+    "\\HSPA-TEST\\bin\\Release",
+    "\\HSPA-TEST\\obj",
+    "\\HSPA-TEST\\Presentation",
+    "\\HSPA-TEST\\Presentation\\Controllers",
+    "\\HSPA-TEST\\Properties"
+  ],
+  "SelectedNode": "\\HSPA-TEST\\Presentation\\Controllers\\CityController.cs",
+=======
     ""
   ],
-  "SelectedNode": "\\HSPA-TEST.sln",
+>>>>>>> ac465bc216ef07d6ee8da3cbc8c4531bd9a90c80
   "PreviewInSolutionExplorer": false
 }

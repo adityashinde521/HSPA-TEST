@@ -1,5 +1,4 @@
-using HSPA_TEST.DAL.Data;
-using HSPA_TEST.DAL.Interface;
+using HSPA_TEST.DAL;
 using HSPA_TEST.DAL.Models.Authentication;
 using HSPA_TEST.DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -87,7 +86,6 @@ builder.Services.AddAuthentication(options =>
 
 
 builder.Services.AddScoped<ICityRepository, CityRepository>();  //This Injects ICity Repo with Implementation of CityRepository
-builder.Services.AddScoped<IFurnishingTypeRepository, FurnishingTypeRepository>();
 
 
 

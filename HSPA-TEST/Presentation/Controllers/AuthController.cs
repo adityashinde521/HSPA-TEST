@@ -108,7 +108,7 @@ namespace HSPA_TEST.Presentation.Controllers
         private string GenerateToken(string userId, string userName, string roleInfo)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenKey = Encoding.ASCII.GetBytes("dsrutigjybsfcuy7iwt67e8q23yuwdgjhxaskd");
+            var tokenKey = Encoding.ASCII.GetBytes("ZIkKq2Vr4zuq789E8lOJquNGeh");
             var expiresAt = DateTime.Now.AddDays(30);
             var tokenDescriptor = new SecurityTokenDescriptor()
             {

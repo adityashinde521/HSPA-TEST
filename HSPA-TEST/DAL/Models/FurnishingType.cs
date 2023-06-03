@@ -1,6 +1,4 @@
-﻿using HSPA_TEST.DAL.Models;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HSPA_TEST.DAL.Models
 {
@@ -11,5 +9,16 @@ namespace HSPA_TEST.DAL.Models
 
         public string Name { get; set; }
     }
-
 }
+
+/*using System.ComponentModel.DataAnnotations;
+
+namespace HSPA_TEST.DAL.Models
+{
+    public class FurnishingType : BaseEntity
+    {
+        [Required]
+        public string Name { get; set; }
+    }
+}
+*/

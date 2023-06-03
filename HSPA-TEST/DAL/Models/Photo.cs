@@ -16,7 +16,7 @@ namespace HSPA_TEST.DAL.Models
         public Guid PropertyId { get; set; }
         public Property Property { get; set; }
 
-     }
+    }
 }
 
 /*

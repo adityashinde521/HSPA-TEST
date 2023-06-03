@@ -1,22 +1,35 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Data;
 
 namespace HSPA_TEST.DAL.Models.Authentication
 {
     public class RegisterRequestModel
-    {    public class User : IdentityUser
     {
-        // Custom properties for User entity
+        [StringLength(100, MinimumLength = 3)]
+        [Required]
         public string FirstName { get; set; }
+
+        [StringLength(100, MinimumLength = 3)]
         public string LastName { get; set; }
-        public int Gender { get; set; }
 
-        public string RoleName { get; set; }
+        [EnumDataType(typeof(Gender))]
+        [Required]
+        public Gender Gender { get; set; }
 
-        // Navigation property for UserRole
-        public UserRole UserRole { get; set; }
-    }
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        [StringLength(100, MinimumLength = 3)]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 3)]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 3)]
+        [DataType(DataType.Password)]
+        [Compare("Password")]
         public string ConfirmPassword { get; set; }
 
 
